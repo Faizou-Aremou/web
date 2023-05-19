@@ -3,9 +3,9 @@ interface UserProps {
   age: number;
 }
 
-type CallBack = <T>(value: T) => void;
+type CallBack = () => void;
 export class User {
-  events: Record<string, CallBack[]> = {}
+  events: Record<string, CallBack[]> = {};
   constructor(private data: UserProps) {
   }
 
@@ -17,7 +17,18 @@ export class User {
     this.data = { ...this.data, ...update }
   }
 
-  on(eventName: string, callBack: CallBack) {
-
+  on(eventName: string, callBack: CallBack): void {
+    if (this.events[eventName]) {
+      this.events[eventName] = [...this.events[eventName], callBack];
+    } else {
+      this.events[eventName] = [callBack];
+    }
+  }
+  trigger(eventName: string): void {
+    const handlers = this.events[eventName];
+    if (!handlers || handlers.length === 0) {
+      return;
+    }
+    handlers.forEach(callback => callback());
   }
 }
