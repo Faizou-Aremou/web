@@ -4,15 +4,19 @@
   "description": "client side web framework",
   "main": "index.js",
   "scripts": {
-    "start": "parcel index.html"
+    "start:client": "parcel index.html",
+    "start:back": "json-server -w ./api/db.json",
+    "start": "concurrently npm:start:*"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "json-server": "^0.17.3",
     "parcel-bundler": "^1.12.5"
   },
   "devDependencies": {
+    "concurrently": "^8.0.1",
     "typescript": "^5.0.4"
   }
 }
