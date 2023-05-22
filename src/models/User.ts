@@ -1,4 +1,7 @@
+import axios from "../../node_modules/axios/index";
+
 interface UserProps {
+  id?: number
   name: string;
   age: number;
 }
@@ -9,7 +12,7 @@ export class User {
   constructor(private data: UserProps) {
   }
 
-  get(propName: keyof UserProps): number | string {
+  get(propName: keyof UserProps): number | string | undefined {
     return this.data[propName];
   }
 
@@ -30,5 +33,19 @@ export class User {
       return;
     }
     handlers.forEach(callback => callback());
+  }
+
+  async fetch(): Promise<void> {
+    const response = await axios.get(`http://localhost:3000/users/${this.get('id')}`);
+    this.set(response.data);
+  }
+
+  save(): void {
+    const id = this.get('id');
+    if (this.get('id')) {
+      axios.put(`http://localhost:3000/users/${id}`, this.data);
+    } else {
+      axios.post('http://localhost:3000/users', this.data);
+    }
   }
 }
