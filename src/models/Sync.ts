@@ -1,16 +1,18 @@
-import axios from "../../node_modules/axios/index";
+import axios, { AxiosPromise } from "../../node_modules/axios/index";
 export class Sync {
-  async fetch(): Promise<void> {
-    const response = await axios.get(`http://localhost:3000/users/${this.get('id')}`);
-   // this.set(response.data);
+
+  constructor(public rootUrl: string) { }
+  async fetch(id: number): AxiosPromise {
+    const response = await axios.get(`${this.rootUrl}/${id}`);
+    return response;
   }
 
-  save(): void {
-    // const id = this.get('id');
-    // if (this.get('id')) {
-    //   axios.put(`http://localhost:3000/users/${id}`, this.data);
-    // } else {
-    //   axios.post('http://localhost:3000/users', this.data);
-    // }
+  save<T extends { id?: number }>(data: T): AxiosPromise {
+    const id = data.id;
+    if (id) {
+      return axios.put(`${this.rootUrl}/${id}`, data);
+    } else {
+      return axios.post(this.rootUrl, data);
+    }
   }
 }
