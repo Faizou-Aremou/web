@@ -10,15 +10,8 @@ export interface UserProps {
 
 export class User {
   events = new Eventing();
-  constructor(private data: UserProps) {
-  }
+  constructor(public data: any) {
 
-  get(propName: keyof UserProps): number | string | undefined {
-    return this.data[propName];
-  }
-
-  set(update: Partial<UserProps>): void {
-    this.data = { ...this.data, ...update }
   }
 
 }
