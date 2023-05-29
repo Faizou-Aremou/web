@@ -1,7 +1,7 @@
 type CallBack = () => void;
 export class Eventing {
   events: Record<string, CallBack[]> = {};
-  on(eventName: string, callBack: CallBack): void {
+  on = (eventName: string, callBack: CallBack): void =>{
     if (this.events[eventName]) {
       this.events[eventName] = [...this.events[eventName], callBack];
     } else {

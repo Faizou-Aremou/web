@@ -1,8 +1,11 @@
 
+import { Attribute } from "./Attribute";
 import { Eventing } from "./Eventing";
+import { rootUrl } from "./rootUrl";
+import { Sync } from "./Sync";
 
 export interface UserProps {
-  id?: number
+  id?: number;
   name: string;
   age: number;
 }
@@ -10,8 +13,21 @@ export interface UserProps {
 
 export class User {
   events = new Eventing();
-  constructor(public data: any) {
-
+  sync: Sync = new Sync(rootUrl);
+  attributes: Attribute<UserProps>;
+  constructor(private data: any) {
+    this.attributes = new Attribute(data);
   }
 
+  get on() {
+    return this.events.on;
+  }
+
+  get trigger() {
+    return this.events.trigger;
+  }
+
+  get get() {
+    return this.attributes.get;
+  }
 }
