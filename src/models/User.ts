@@ -30,4 +30,20 @@ export class User {
   get get() {
     return this.attributes.get;
   }
+
+  set(update: Partial<UserProps>): void {
+    this.attributes.set(update);
+    this.events.trigger('change');
+  }
+
+  fetch(): void {
+    const id = this.attributes.get('id');
+    if (typeof id !== 'number') {
+      throw new Error('Cannot fetch without an id');
+    }
+
+    this.sync.fetch(id).then((response) => {
+      this.set(response.data);
+    })
+  }
 }
