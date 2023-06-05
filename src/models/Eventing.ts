@@ -1,4 +1,5 @@
-type CallBack = () => void;
+import { CallBack } from "./Model";
+
 export class Eventing {
   events: Record<string, CallBack[]> = {};
   on = (eventName: string, callBack: CallBack): void =>{

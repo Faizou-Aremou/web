@@ -1,5 +1,6 @@
 import axios, { AxiosPromise } from "../../node_modules/axios/index";
-export class Sync {
+
+export class ApiSync {
 
   constructor(public rootUrl: string) { }
   async fetch(id: number): AxiosPromise {

@@ -1,54 +1,23 @@
 
 import { Attribute } from "./Attribute";
 import { Eventing } from "./Eventing";
-import { rootUrl } from "./rootUrl";
-import { Sync } from "./Sync";
+import { Model } from "./Model";
+import { ApiSync } from "./ApiSync";
 
 export interface UserProps {
   id?: number;
   name: string;
   age: number;
 }
+const rootUrl = 'http://localhost:3000/users'
 
+export class User extends Model<UserProps>{
 
-export class User {
-  events = new Eventing();
-  sync: Sync = new Sync(rootUrl);
-  attributes: Attribute<UserProps>;
-  constructor(private data: any) {
-    this.attributes = new Attribute(data);
-  }
-
-  get on() {
-    return this.events.on;
-  }
-
-  get trigger() {
-    return this.events.trigger;
-  }
-
-  get get() {
-    return this.attributes.get;
-  }
-
-  set(update: Partial<UserProps>): void {
-    this.attributes.set(update);
-    this.events.trigger('change');
-  }
-
-  fetch(): void {
-    const id = this.attributes.get('id');
-    if (typeof id !== 'number') {
-      throw new Error('Cannot fetch without an id');
-    }
-
-    this.sync.fetch(id).then((response) => {
-      this.set(response.data);
-    })
-  }
-  save(): void {
-    this.sync.save(this.attributes.getAll()).then(() => { this.trigger('save') }).catch(() => {
-      this.trigger('error');
-    })
+  static buildUser(attrs: UserProps): User {
+    return new User(
+      new Attribute<UserProps>(attrs),
+      new Eventing(),
+      new ApiSync(rootUrl)
+    )
   }
 }
