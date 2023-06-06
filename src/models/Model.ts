@@ -18,7 +18,7 @@ interface Events {
 }
 
 
-export class Model<T extends {id?:number}> {
+export class Model<T extends {id?:number}> { // viewModelBase service
   constructor(
     private attributes: ModelAttributes<T>,
     private events: Events,

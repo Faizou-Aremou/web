@@ -3,6 +3,7 @@ import { Attribute } from "./Attribute";
 import { Eventing } from "./Eventing";
 import { Model } from "./Model";
 import { ApiSync } from "./ApiSync";
+import { Collection } from "./Collection";
 
 export interface UserProps {
   id?: number;
@@ -11,7 +12,7 @@ export interface UserProps {
 }
 const rootUrl = 'http://localhost:3000/users'
 
-export class User extends Model<UserProps>{
+export class User extends Model<UserProps>{ //viewModel Service
 
   static buildUser(attrs: UserProps): User {
     return new User(
@@ -19,5 +20,8 @@ export class User extends Model<UserProps>{
       new Eventing(),
       new ApiSync(rootUrl)
     )
+  }
+  static buildUserCollection(): Collection<User, UserProps> {
+    return new Collection<User, UserProps>(rootUrl, User.buildUser);
   }
 }
