@@ -1,6 +1,17 @@
 export class UserForm {
-  parent: Element;
+  constructor(public parent: Element | null) {
 
+  }
+
+  eventsMap(): { [key: string]: () => void } {
+    return {
+      'click:button': this.onButtonClick
+    }
+  }
+
+  onButtonClick(): void {
+    console.log('Hi there');
+  }
   template(): string {
     return `
          <div> 
@@ -8,5 +19,11 @@ export class UserForm {
            <input/>
           </div
 `
+  }
+
+  render(): void {
+    const templateElement = document.createElement('template');
+    templateElement.innerHTML = this.template();
+    this.parent?.append(templateElement.content);
   }
 }
