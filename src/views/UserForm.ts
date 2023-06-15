@@ -2,7 +2,7 @@ import { User } from "../models/User";
 
 export class UserForm {
 
-  constructor(public parent: Element | null, public model: User) {
+  constructor(public parent: Element, public model: User) {
     this.bindModel();
   }
 
@@ -18,7 +18,15 @@ export class UserForm {
   }
 
   onSetNameClick(): void {
-    this.model.setName('test');
+    const input = this.parent.querySelector('input#name');
+    if (this.isHTMLInput(input)) {
+      const name  = input.value
+      this.model.set({name});
+    }
+
+  }
+  isHTMLInput(value: Element | null | undefined): value is HTMLInputElement {
+    return value !== null;
   }
 
 
@@ -28,8 +36,8 @@ export class UserForm {
            <h1>User Form</h1>
            <div>User name: ${this.model.get('name')}</div>
            <div>User age: ${this.model.get('age')}</div>
-           <input/>
-           <button id="change-name"> Change Name </button>
+           <input id="name"/>
+           <button id="set-name"> Change Name </button>
            <button id="set-age"> Set random age </button>
           </div
 `
@@ -53,7 +61,7 @@ export class UserForm {
     const templateElement = document.createElement('template');
     templateElement.innerHTML = this.template();
     this.bindEvents(templateElement.content);
-    this.parent?.append(templateElement.content);
+    this.parent.append(templateElement.content);
   }
   private bindModel() {
     this.model.on('change', () => {

@@ -28,8 +28,4 @@ export class User extends Model<UserProps>{ //viewModel Service
     const age = Math.round(Math.random() * 100);
     this.set({ age })
   }
-
-  setName(name: string): void {
-
-  }
 }
