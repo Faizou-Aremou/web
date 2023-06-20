@@ -1,7 +1,8 @@
 import { AxiosPromise } from "../../node_modules/axios/index";
+import { HasId } from "./has-id";
 
 export type CallBack = () => void;
-interface ModelAttributes<T extends {id?:number}> {
+interface ModelAttributes<T extends HasId> {
   set: (value: Partial<T>) => void;
   getAll(): T;
   get: <K extends keyof T>(key:K) => T[K];
@@ -18,7 +19,7 @@ interface Events {
 }
 
 
-export class Model<T extends {id?:number}> { // viewModelBase service
+export class Model<T extends HasId> { // viewModelBase service
   constructor(
     private attributes: ModelAttributes<T>,
     private events: Events,

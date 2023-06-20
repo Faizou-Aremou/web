@@ -1,27 +1,28 @@
-import { User } from "../models/User";
+import { User, UserProps } from "../models/User";
+import { ViewWithEvent } from "./View";
 
-export class UserForm {
-
-  constructor(public parent: Element, public model: User) {
-    this.bindModel();
-  }
+export class UserForm extends ViewWithEvent<UserProps, User> {
 
   eventsMap(): { [key: string]: () => void } {
     return {
       'click:button#set-name': this.onSetNameClick,
       'click:button#set-age': this.onSetAgeClick,
+      'click:button#save-model': this.onSetModelClick,
     }
   }
   onSetAgeClick(): void {
     this.model.setRandomAge();
-    console.log('', this.model.get('age'));
+    this.model.get('age');
+  }
+  onSetModelClick(): void {
+    console.log('', this.model.save());
   }
 
   onSetNameClick(): void {
     const input = this.parent.querySelector('input#name');
     if (this.isHTMLInput(input)) {
-      const name  = input.value
-      this.model.set({name});
+      const name = input.value
+      this.model.set({ name });
     }
 
   }
@@ -33,39 +34,11 @@ export class UserForm {
   template(): string {
     return `
          <div> 
-           <h1>User Form</h1>
-           <div>User name: ${this.model.get('name')}</div>
-           <div>User age: ${this.model.get('age')}</div>
-           <input id="name"/>
+           <input placeholder="${this.model.get('name')}" id="name"/>
            <button id="set-name"> Change Name </button>
            <button id="set-age"> Set random age </button>
+           <button id="save-model">Save User</button>
           </div
 `
-  }
-
-  bindEvents(fragment: DocumentFragment): void {
-    const eventsMap = this.eventsMap();
-    for (const eventKey in eventsMap) {
-      const [eventName, selector] = eventKey.split(':');
-      fragment.querySelectorAll(selector).forEach((element) => {
-        element.addEventListener(eventName, eventsMap[eventKey].bind(this))
-      })
-    }
-  }
-
-  render(): void {
-    if (this.parent) {
-      this.parent.innerHTML = '';
-    }
-
-    const templateElement = document.createElement('template');
-    templateElement.innerHTML = this.template();
-    this.bindEvents(templateElement.content);
-    this.parent.append(templateElement.content);
-  }
-  private bindModel() {
-    this.model.on('change', () => {
-      this.render();
-    });
   }
 }
