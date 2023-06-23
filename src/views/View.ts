@@ -47,8 +47,8 @@ export abstract class ViewWithEvent<K extends HasId, T extends Model<K>> extends
     this.parent.append(templateElement.content);
   }
 }
-export abstract class ViewWithRegion<K extends HasId, T extends Model<K>> extends View<K, T>{
-  regions: { [selector: string]: Element } = {};
+export abstract class ViewWithNestingRegions<K extends HasId, T extends Model<K>> extends View<K, T>{
+  regions: { [key: string]: Element } = {};
   abstract regionsMap(): { [key: string]: string };
 
   mapRegions(fragment: DocumentFragment): void {
@@ -57,11 +57,14 @@ export abstract class ViewWithRegion<K extends HasId, T extends Model<K>> extend
       const selector = regionsMap[key];
       const element = fragment.querySelector(selector)
       if (element) {
-        this.regions[selector] = element
+        this.regions[key] = element
       }
 
     }
   }
+
+  abstract onRender(): void
+
   override render(): void {
     if (this.parent) {
       this.parent.innerHTML = '';
@@ -69,6 +72,9 @@ export abstract class ViewWithRegion<K extends HasId, T extends Model<K>> extend
     const templateElement = document.createElement('template');
     templateElement.innerHTML = this.template();
     this.mapRegions(templateElement.content);
+
+    this.onRender()
+
     this.parent.append(templateElement.content);
   }
 }
