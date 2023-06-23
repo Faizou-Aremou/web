@@ -26,7 +26,7 @@ export abstract class View<K extends HasId, T extends Model<K>> {
 
 export abstract class ViewWithEvent<K extends HasId, T extends Model<K>> extends View<K, T>{
 
-  abstract eventsMap():{ [key: string]: () => void };
+  abstract eventsMap(): { [key: string]: () => void };
   bindEvents(fragment: DocumentFragment): void {
     const eventsMap = this.eventsMap();
     for (const eventKey in eventsMap) {
@@ -44,6 +44,31 @@ export abstract class ViewWithEvent<K extends HasId, T extends Model<K>> extends
     const templateElement = document.createElement('template');
     templateElement.innerHTML = this.template();
     this.bindEvents(templateElement.content);
+    this.parent.append(templateElement.content);
+  }
+}
+export abstract class ViewWithRegion<K extends HasId, T extends Model<K>> extends View<K, T>{
+  regions: { [selector: string]: Element } = {};
+  abstract regionsMap(): { [key: string]: string };
+
+  mapRegions(fragment: DocumentFragment): void {
+    const regionsMap = this.regionsMap();
+    for (let key in regionsMap) {
+      const selector = regionsMap[key];
+      const element = fragment.querySelector(selector)
+      if (element) {
+        this.regions[selector] = element
+      }
+
+    }
+  }
+  override render(): void {
+    if (this.parent) {
+      this.parent.innerHTML = '';
+    }
+    const templateElement = document.createElement('template');
+    templateElement.innerHTML = this.template();
+    this.mapRegions(templateElement.content);
     this.parent.append(templateElement.content);
   }
 }
