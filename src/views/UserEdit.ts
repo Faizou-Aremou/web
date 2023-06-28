@@ -5,10 +5,6 @@ import { View, ViewWithNestingRegions } from "./View";
 
 export class UserEdit extends ViewWithNestingRegions<UserProps, User>{
 
-  regions: { [selector: string]: Element; } = {
-
-  }
-
   onRender(): void {
     new UserShow(this.regions.userShow, this.model).render();
     new UserForm(this.regions.userForm, this.model).render();
